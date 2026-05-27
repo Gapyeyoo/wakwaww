@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You, My Love</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root{--cream:#f7f0e6;--blush:#e8c4b8;--rose:#c0737a;--deep:#5c2d35;--ink:#2e1a1f;--gold:#c9a84c;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background-color:var(--cream);font-family:'Jost',sans-serif;color:var(--ink);overflow-x:hidden;cursor:none;}
+    .cursor{position:fixed;top:0;left:0;width:16px;height:16px;border-radius:50%;background:var(--rose);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:multiply;}
+    .petal{position:fixed;pointer-events:none;animation:fall linear infinite;opacity:0;z-index:0;}
+    @keyframes fall{0%{transform:translateY(-40px) rotate(0deg);opacity:0;}10%{opacity:.6;}90%{opacity:.4;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.5;}
+
+    /* BUNNY */
+    .bunny-wrap{position:fixed;pointer-events:none;z-index:500;}
+    .reaction-bubble{position:absolute;top:-52px;left:50%;transform:translateX(-50%) scale(0);font-size:1.4rem;background:#fff9f5;border:1.5px solid var(--blush);border-radius:50px;padding:5px 12px;box-shadow:0 4px 16px rgba(192,115,122,.18);pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;opacity:0;white-space:nowrap;}
+    .reaction-bubble.show{transform:translateX(-50%) scale(1);opacity:1;}
+
+    /* COVER */
+    #cover{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;z-index:2;background:radial-gradient(ellipse 80% 60% at 50% 40%,#f0dcd2 0%,var(--cream) 100%);}
+    .cover-deco{font-size:clamp(3rem,10vw,7rem);line-height:1;letter-spacing:.15em;color:var(--blush);opacity:.4;font-family:'Cormorant Garamond',serif;animation:fadeIn 2s ease forwards;user-select:none;}
+    .cover-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,8vw,5.5rem);font-weight:300;font-style:italic;color:var(--deep);margin:.4rem 0 1.2rem;animation:riseUp 1.4s ease .3s both;line-height:1.15;}
+    .cover-sub{font-size:clamp(.8rem,2.2vw,1rem);letter-spacing:.3em;text-transform:uppercase;color:var(--rose);animation:riseUp 1.4s ease .6s both;}
+    .cover-line{width:60px;height:1px;background:var(--gold);margin:1.8rem auto;animation:fadeIn 2s ease .9s both;}
+    .reveal-btn{margin-top:2rem;display:inline-flex;align-items:center;gap:.6rem;padding:.85rem 2.2rem;border:1px solid var(--rose);background:transparent;color:var(--rose);font-family:'Jost',sans-serif;font-size:.85rem;letter-spacing:.25em;text-transform:uppercase;cursor:none;transition:background .3s,color .3s;animation:riseUp 1.4s ease 1s both;}
+    .reveal-btn:hover{background:var(--rose);color:var(--cream);}
+    @keyframes riseUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+    /* LETTER */
+    #letter{position:relative;z-index:2;max-width:720px;margin:0 auto;padding:5rem 2rem 8rem;display:none;}
+    #letter.visible{display:block;animation:riseUp .9s ease both;}
+    .letter-header{text-align:center;margin-bottom:3.5rem;}
+    .letter-header .to{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,5vw,3rem);font-style:italic;font-weight:300;color:var(--deep);}
+    .letter-header .heart-divider{margin:1rem 0;color:var(--rose);font-size:1.1rem;letter-spacing:.6em;}
+    .music-wrap{display:flex;align-items:center;gap:16px;max-width:400px;margin:0 auto 3rem;background:#fff9f5;border:1px solid #f0dcd2;border-radius:60px;padding:14px 26px;box-shadow:0 4px 24px rgba(192,115,122,.14);}
+    .music-bars{display:flex;align-items:flex-end;gap:3px;height:28px;}
+    .music-bars span{display:block;width:4px;background:var(--rose);border-radius:4px;animation:bar linear infinite;}
+    .music-bars span:nth-child(1){height:10px;animation-duration:.8s;}
+    .music-bars span:nth-child(2){height:20px;animation-duration:.6s;}
+    .music-bars span:nth-child(3){height:14px;animation-duration:.9s;}
+    .music-bars span:nth-child(4){height:22px;animation-duration:.7s;}
+    .music-bars span:nth-child(5){height:10px;animation-duration:1s;}
+    @keyframes bar{0%,100%{transform:scaleY(1);}50%{transform:scaleY(.35);}}
+    .music-info{display:flex;flex-direction:column;gap:2px;flex:1;}
+    .music-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;color:var(--deep);}
+    .music-artist{font-size:.75rem;letter-spacing:.18em;color:var(--rose);text-transform:uppercase;}
+    .music-ctrl{background:none;border:1px solid var(--blush);border-radius:50%;width:36px;height:36px;cursor:pointer;color:var(--rose);font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .music-ctrl:hover{background:var(--blush);}
+    #bgm-error{display:none;text-align:center;font-size:.78rem;color:var(--rose);margin:-2rem auto 2.5rem;letter-spacing:.05em;}
+    .letter-body{background:#fff9f5;border:1px solid #f0dcd2;border-radius:4px;padding:clamp(1.8rem,5vw,3.5rem);position:relative;box-shadow:0 4px 40px rgba(192,115,122,.08),6px 6px 0 var(--blush);}
+    .letter-body::before{content:'\275D';position:absolute;top:1.2rem;left:1.6rem;font-size:3rem;color:var(--blush);font-family:'Cormorant Garamond',serif;line-height:1;}
+    .letter-text{font-family:'Cormorant Garamond',serif;font-size:clamp(1.05rem,2.4vw,1.25rem);font-weight:300;line-height:2;color:var(--ink);padding-top:1.5rem;}
+    .letter-text p{margin-bottom:1.4em;}
+    .letter-closing{text-align:right;margin-top:2rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:var(--deep);}
+    .letter-closing .sender{display:block;font-size:1.4rem;font-weight:400;margin-top:.4rem;color:var(--rose);}
+    .footer-hearts{text-align:center;margin-top:4rem;color:var(--blush);font-size:1.3rem;letter-spacing:.6em;}
+    @media(max-width:480px){.letter-body{padding:1.6rem 1.2rem;}}
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- BUNNY -->
+<div class="bunny-wrap" id="bunny" style="left:80px;top:200px;">
+  <div class="reaction-bubble" id="rbub">💕</div>
+  <svg id="bsvg" width="68" height="88" viewBox="0 0 68 88" style="overflow:visible;display:block;">
+    <!-- ears -->
+    <ellipse id="el" cx="21" cy="21" rx="7" ry="18" fill="#f0d6cc" stroke="#d4a090" stroke-width="1.2"/>
+    <ellipse cx="21" cy="21" rx="3.5" ry="12" fill="#e8b4a8"/>
+    <ellipse id="er" cx="47" cy="21" rx="7" ry="18" fill="#f0d6cc" stroke="#d4a090" stroke-width="1.2"/>
+    <ellipse cx="47" cy="21" rx="3.5" ry="12" fill="#e8b4a8"/>
+    <!-- body -->
+    <ellipse cx="34" cy="66" rx="20" ry="17" fill="#f5e6dc" stroke="#d4a090" stroke-width="1.2"/>
+    <!-- head -->
+    <ellipse cx="34" cy="43" rx="18" ry="17" fill="#f7ede5" stroke="#d4a090" stroke-width="1.2"/>
+    <!-- eyes -->
+    <circle cx="26" cy="42" r="3.5" fill="#2e1a1f"/>
+    <circle cx="26.9" cy="41.2" r="1.2" fill="#fff" opacity=".75"/>
+    <circle cx="42" cy="42" r="3.5" fill="#2e1a1f"/>
+    <circle cx="42.9" cy="41.2" r="1.2" fill="#fff" opacity=".75"/>
+    <!-- blush -->
+    <ellipse cx="22" cy="47" rx="5" ry="3" fill="#e8a0a0" opacity=".4"/>
+    <ellipse cx="46" cy="47" rx="5" ry="3" fill="#e8a0a0" opacity=".4"/>
+    <!-- nose + mouth -->
+    <ellipse cx="34" cy="49" rx="2.5" ry="1.8" fill="#d4869a"/>
+    <path d="M31 51.5 Q34 54 37 51.5" fill="none" stroke="#c0737a" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- tummy -->
+    <ellipse cx="34" cy="67" rx="12" ry="10" fill="#fdf0ea" opacity=".7"/>
+    <!-- arms -->
+    <ellipse id="al" cx="15" cy="61" rx="5" ry="9" fill="#f5e6dc" stroke="#d4a090" stroke-width="1" transform="rotate(-15 15 61)"/>
+    <ellipse id="ar" cx="53" cy="61" rx="5" ry="9" fill="#f5e6dc" stroke="#d4a090" stroke-width="1" transform="rotate(15 53 61)"/>
+    <!-- feet -->
+    <ellipse cx="24" cy="81" rx="8" ry="5" fill="#f5e6dc" stroke="#d4a090" stroke-width="1"/>
+    <ellipse cx="46" cy="81" rx="8" ry="5" fill="#f5e6dc" stroke="#d4a090" stroke-width="1"/>
+    <!-- tail -->
+    <circle cx="53" cy="72" r="6" fill="#fff" opacity=".8"/>
+    <!-- held item -->
+    <text id="hi" x="34" y="26" text-anchor="middle" font-size="18" opacity="0">🌸</text>
+  </svg>
+</div>
+
+<!-- COVER -->
+<section id="cover">
+  <div class="cover-deco">✦ ✦ ✦</div>
+  <h1 class="cover-title">Ada sesuatu<br/>untukmu, sayang.</h1>
+  <p class="cover-sub"></p>
+  <div class="cover-line"></div>
+  <button class="reveal-btn" onclick="reveal()">♡ &nbsp;Button ♡</button>
+</section>
+
+<!-- LETTER -->
+<section id="letter">
+  <div class="letter-header">
+    <div class="to">Untuk <strong id="receiver-name">Nirina Aisha a.k.a Bichaa</strong></div>
+    <div class="heart-divider">♥ ♥ ♥</div>
+  </div>
+
+  <!-- MUSIC PLAYER — pastikan file bgm.mp3 ada di folder yang sama -->
+  <div class="music-wrap" id="music-wrap">
+    <div class="music-bars"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="music-info">
+      <span class="music-title">Risk It All</span>
+      <span class="music-artist">Bruno Mars</span>
+    </div>
+    <button class="music-ctrl" id="music-ctrl" onclick="toggleMusic()" title="Play/Pause">&#9646;&#9646;</button>
+  </div>
+  <p id="bgm-error">&#9888; File bgm.mp3 tidak ditemukan - pastikan ada di folder yang sama dengan index.html</p>
+  <audio id="bgm" loop><source src="Bruno Mars - Risk It All [Official Music Video] (mp3cut.net).mp3" type="audio/mpeg"></audio>
+
+  <div class="letter-body">
+    <div class="letter-text">
+      <!-- GANTI ISI SURAT DI SINI -->
+      <p>Hei, Cayangg.🤍</p>
+      <p>makasih banyak ya buat surat manisnya. njuy baca setiap kalimatnya sambil senyum-senyum sendiri, sekaligus terharu banget.</p>
+      <p>Njuy mau bilang, Bicha nggak perlu minta maaf soal sering marah atau bikin capek. Bagi njuy, bisa nemenin bicha dalam segala mood bicha mau lagi seneng, marah, atau sedih itu adalah hal yang selalu njuy syukuri. Njuy nggak pernah bosen, dan nggak akan pernah bosen sama Bicha.
+      Makasih ya udah percaya sama njuy buat jadi tempat kamu cerita dan jadi diri kamu sendiri. njuy juga ngerasa beruntung banget punya Bicha yang selalu ada buat njuy. Kalau bicha bilang jalan kita masih panjang dan banyak rintangan, bener kata bicha: "selagi bareng-bareng, semua bakal aman dan bisa kita lewatin."</p>
+      <p>njuy ngga butuh momen besar buat bilang ini. njuy cuma mau bicha tahu, hari ini dan setiap hari, bicha berarti banyak banget buat njuy.</p>
+      <p>I love you so much, sayang. 🤍</p>
+    </div>
+    <div class="letter-closing">
+      Dengan seluruh hatiku,
+      <span class="sender" id="sender-name">Njuyy</span>
+    </div>
+  </div>
+  <div class="footer-hearts">♥ ♥ ♥</div>
+</section>
+
+<script>
+/* music toggle */
+function toggleMusic(){
+  const bgm=document.getElementById('bgm');
+  const btn=document.getElementById('music-ctrl');
+  const bars=document.querySelectorAll('.music-bars span');
+  if(bgm.paused){
+    bgm.play();
+    btn.innerHTML='&#9646;&#9646;';
+    bars.forEach(b=>b.style.animationPlayState='running');
+  } else {
+    bgm.pause();
+    btn.innerHTML='&#9654;';
+    bars.forEach(b=>b.style.animationPlayState='paused');
+  }
+}
+/* cursor */
+const cur=document.getElementById('cursor');
+let mx=window.innerWidth/2,my=window.innerHeight/2;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+
+/* petals */
+const psyms=['🌸','🌹','✿','❀','♥','🌷'];
+function spawnP(){
+  const e=document.createElement('div');e.className='petal';
+  e.textContent=psyms[Math.floor(Math.random()*psyms.length)];
+  e.style.left=Math.random()*100+'vw';
+  const d=6+Math.random()*8;e.style.animationDuration=d+'s';
+  e.style.animationDelay=Math.random()*3+'s';
+  e.style.fontSize=(.65+Math.random()*.7)+'rem';
+  document.body.appendChild(e);setTimeout(()=>e.remove(),(d+3)*1000);
+}
+setInterval(spawnP,1100);
+
+/* reveal */
+function reveal(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('letter').classList.add('visible');
+  window.scrollTo({top:0});
+  const bgm=document.getElementById('bgm');
+  bgm.play().catch(()=>{
+    /* autoplay diblokir browser — tampilkan tombol play manual */
+    document.getElementById('music-ctrl').textContent='▶';
+  });
+  bgm.addEventListener('error',()=>{
+    document.getElementById('bgm-error').style.display='block';
+    document.getElementById('music-wrap').style.opacity='.45';
+  });
+  letterMode=true;
+}
+
+/* ── BUNNY ── */
+const bwrap=document.getElementById('bunny');
+const rbub=document.getElementById('rbub');
+const bsvg=document.getElementById('bsvg');
+const al=document.getElementById('al');
+const ar=document.getElementById('ar');
+const hi=document.getElementById('hi');
+const el=document.getElementById('el');
+const er=document.getElementById('er');
+
+let bx=80,by=window.innerHeight/2;
+let tx=bx,ty=by;
+let ph=0,face=1,letterMode=false;
+let wandX=200,wandY=window.innerHeight/2,wandTick=0;
+let rtimer=null,lastRt=0;
+let followMode=false,followTimer=null;
+
+const REACTIONS=[
+  {bub:'❤️',item:'❤️'},{bub:'🌸',item:'🌸'},{bub:'🌹',item:'🌹'},
+  {bub:'✨',item:'✨'},{bub:'🍓',item:'🍓'},{bub:'🎀',item:'🎀'},
+  {bub:'🌷',item:'🌷'},{bub:'💌',item:'💌'},{bub:'🍀',item:'🍀'}
+];
+
+function doReaction(){
+  const now=Date.now();if(now-lastRt<2800)return;lastRt=now;
+  const r=REACTIONS[Math.floor(Math.random()*REACTIONS.length)];
+  clearTimeout(rtimer);
+  rbub.textContent=r.bub;rbub.classList.add('show');
+  hi.textContent=r.item;hi.style.opacity='1';
+  al.setAttribute('transform','rotate(-55 15 61)');
+  ar.setAttribute('transform','rotate(55 53 61)');
+  /* happy ear wiggle */
+  el.style.transform='rotate(-10deg)';el.style.transformOrigin='21px 38px';
+  er.style.transform='rotate(10deg)';er.style.transformOrigin='47px 38px';
+  rtimer=setTimeout(()=>{
+    rbub.classList.remove('show');hi.style.opacity='0';
+    al.setAttribute('transform','rotate(-15 15 61)');
+    ar.setAttribute('transform','rotate(15 53 61)');
+    el.style.transform='';er.style.transform='';
+  },2200);
+}
+
+/* scroll = follow */
+let sTick=0;
+window.addEventListener('scroll',()=>{
+  if(!letterMode)return;
+  followMode=true;clearTimeout(followTimer);
+  followTimer=setTimeout(()=>{followMode=false;pickWand();},2500);
+});
+/* click = react */
+document.addEventListener('click',()=>{if(letterMode)doReaction();});
+
+function pickWand(){
+  wandX=70+Math.random()*(window.innerWidth-140);
+  wandY=window.scrollY+80+Math.random()*(window.innerHeight-160);
+  wandTick=120+Math.floor(Math.random()*180);
+}
+pickWand();
+
+function loop(){
+  requestAnimationFrame(loop);
+
+  if(followMode&&letterMode){
+    tx=mx-34;ty=my+window.scrollY-80;
+  } else {
+    wandTick--;if(wandTick<=0)pickWand();
+    tx=wandX;ty=wandY;
+  }
+
+  const spd=followMode?0.1:0.028;
+  const dx=tx-bx,dy=ty-by;
+  bx+=dx*spd;by+=dy*spd;
+  if(Math.abs(dx)>2)face=dx>0?1:-1;
+
+  const dist=Math.sqrt(dx*dx+dy*dy);
+  let hop=0;
+  if(dist>10){ph+=0.2;hop=-Math.abs(Math.sin(ph))*11;}else ph=0;
+
+  /* clamp to viewport sides */
+  const clampX=Math.max(10,Math.min(window.innerWidth-78,bx));
+  bwrap.style.left=Math.round(clampX)+'px';
+  bwrap.style.top=(Math.round(by+hop)-window.scrollY)+'px';
+  bsvg.style.transform='scaleX('+face+')';
+
+  /* arm swing while walking */
+  if(dist>12&&hi.style.opacity!=='1'){
+    const sw=Math.sin(ph)*24;
+    al.setAttribute('transform','rotate('+((-15)+sw)+' 15 61)');
+    ar.setAttribute('transform','rotate('+((15)-sw)+' 53 61)');
+  }
+
+  /* random reactions */
+  if(Math.random()<0.003)doReaction();
+  if(followMode&&dist<55&&Math.random()<0.006)doReaction();
+}
+loop();
+setTimeout(()=>doReaction(),1400);
+</script>
+</body>
+</html>
